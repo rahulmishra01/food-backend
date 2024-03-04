@@ -1,5 +1,4 @@
 const sendToken = (user, statusCode, res) => {
-    console.log("user, statusCode,=============>", user, statusCode)
   const token = user.getJWTToken();
   res.set("Authorization", `token ${token}`);
 

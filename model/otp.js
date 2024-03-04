@@ -25,7 +25,7 @@ OtpModel.pre("save", async function () {
 });
 
 OtpModel.methods.CompareOtp = async function (otp) {
-  const isMatch = await bcrypt.compare(this.otp, otp);
+  const isMatch = await bcrypt.compare(otp, this.otp);
   return isMatch;
 };
 
