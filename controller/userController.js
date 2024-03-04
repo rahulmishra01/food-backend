@@ -30,7 +30,9 @@ const Register = catchAsyncError(async (req, res, next) => {
     });
 
     await SendMail(email, firstName, random);
-    sendToken(data, 201, res);
+    return res
+      .status(201)
+      .json({ success: true, data: data, message: "user has been created..." });
   } catch (error) {
     return res.status(500).json({ error });
   }
@@ -57,12 +59,10 @@ const verifyUser = catchAsyncError(async (req, res, next) => {
         { isVerified: true },
         { new: true }
       );
-      const token = await user.getJWTToken();
       await OtpModel.findOneAndDelete({ email });
       return res.status(200).json({
         message: "user varified successfully",
         data: {
-          access_token: token,
           _id: user._id,
           name: user.firstName + " " + user.lastName,
           email: user.email,
@@ -72,7 +72,6 @@ const verifyUser = catchAsyncError(async (req, res, next) => {
       return next(new ErrorHandler("Please fill right otp here...", 400, res));
     }
   } catch (error) {
-    console.log("Error---------------->", error);
     return res.status(500).json({ error: error });
   }
 });
@@ -96,7 +95,6 @@ const resendOTP = catchAsyncError(async (req, res, next) => {
       .status(200)
       .json({ success: true, message: "Otp has been sended to your email" });
   } catch (error) {
-    console.log("error===========>", error);
     return res.status(500).json({ error: error });
   }
 });
@@ -130,7 +128,6 @@ const forgotPassword = catchAsyncError(async (req, res, next) => {
       .status(200)
       .json({ success: true, message: "otp sended to your email" });
   } catch (error) {
-    console.log("error----------->", error);
     return res.status(500).json({ error: error });
   }
 });
@@ -169,7 +166,6 @@ const verifyForgotPassword = catchAsyncError(async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log("error============>", error);
     return res.status(500).json({ error: error });
   }
 });
@@ -203,7 +199,6 @@ const resetPassword = catchAsyncError(async (req, res, next) => {
     );
     return res.status(200).json({ message: "password has been updated", data });
   } catch (error) {
-    console.log("error------------->", error);
     return res.status(500).json({ error: error });
   }
 });
@@ -236,7 +231,6 @@ const Login = catchAsyncError(async (req, res, next) => {
     }
     sendToken(user, 200, res);
   } catch (error) {
-    console.log("error============>", error);
     return res.status(500).json({ error: error });
   }
 });
